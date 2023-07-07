@@ -6,30 +6,55 @@ public class Birdy : MonoBehaviour
 {
     public float velocity = 1f;
     public Rigidbody2D rb2d;
-    public bool isDead = false;
+    public bool isDead = true;
+    private bool loginNow = true;
 
-    // Start is called before the first frame update
+    public GameManager GameManager;
+    public GameObject StartScreen;
+    public GameObject DeathScreen;
+
     void Start()
     {
-        // rigidbody2D = GetComponent<Rigidbody2d>()
+        if(!loginNow)
+        {
+            StartScreen.SetActive(false);
+        }
+        Time.timeScale = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             rb2d.velocity = Vector2.up * velocity;
         }
-        
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (collision.gameObject.name == "ScoreArea")
         {
-
+            GameManager.UpdateScore();
         }
-
     }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "DeathArea")
+        {
+            isDead = true;
+            Time.timeScale = 0;
+
+            DeathScreen.SetActive(true);
+        }
+    }
+    public void StartGame()
+    {
+        isDead = false;
+        loginNow = false;
+        Time.timeScale = 1;
+        StartScreen.SetActive(false);
+    }
+
 }
